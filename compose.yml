@@ -1,0 +1,30 @@
+services:
+    worker:
+        image: trak2022z/mpi-node:debianmpi
+        networks:
+          - main-network
+        volumes:
+          - type: bind
+            source: ./workdir/
+            target: /home/user/mpi/
+    master:
+        depends_on:
+          - worker
+        image: trak2022z/mpi-master:debianmpi
+        environment:
+            MASTER_HOSTNAME: "master"
+            WORKER_HOSTNAME: "worker"
+        networks:
+          - main-network
+        ports:
+          - target: 22
+            host_ip: localhost
+            published: 2222
+            protocol: tcp
+        volumes:
+          - type: bind
+            source: ./workdir/
+            target: /home/user/mpi/
+
+networks:
+    main-network:
